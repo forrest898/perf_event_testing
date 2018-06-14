@@ -104,9 +104,13 @@ int main(int argc, char** argv) {
 	if (!quiet) printf("This tests the record sampling interface.\n");
 
 	memset(&sa, 0, sizeof(struct sigaction));
+
+	/* sa_flags establish the ABI/EBI for our signal handler i.e. arguments and
+	return values */
 	sa.sa_sigaction = our_handler;
 	sa.sa_flags = SA_SIGINFO;
 
+	/* sigaction establishes which handler will be triggered for the SIGIO signal */
 	if (sigaction( SIGIO, &sa, NULL) < 0) {
 		fprintf(stderr,"Error setting up signal handler\n");
 		exit(1);
@@ -177,7 +181,10 @@ int main(int argc, char** argv) {
 	our_mmap=mmap(NULL, mmap_pages*getpagesize(),
 			PROT_READ|PROT_WRITE, MAP_SHARED, fd1, 0);
 
+	/* SIGIO must be asynchronous because perf will write to the mmap and continue
+	to count simultaneously */
 	fcntl(fd1, F_SETFL, O_RDWR|O_NONBLOCK|O_ASYNC);
+	/* Associates our file descriptor with the appropriate signal */
 	fcntl(fd1, F_SETSIG, SIGIO);
 	fcntl(fd1, F_SETOWN,getpid());
 
