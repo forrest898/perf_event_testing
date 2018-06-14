@@ -330,7 +330,7 @@ long long perf_mmap_read( void *our_mmap, int mmap_size,
 	long long bytesize,prev_head_wrap;
 
 	unsigned char *data;
-
+	printf("\nPage size  = %d\n", getpagesize());
 	void *data_mmap=our_mmap+getpagesize();
 
 	if (mmap_size==0) return 0;
@@ -453,7 +453,7 @@ long long perf_mmap_read( void *our_mmap, int mmap_size,
 			printf(", MISC=%d (",event->misc);
 			switch(event->misc & PERF_RECORD_MISC_CPUMODE_MASK) {
 				case PERF_RECORD_MISC_CPUMODE_UNKNOWN:
-					printf("PERF_RECORD_MISC_CPUMODE_UNKNOWN"); break; 
+					printf("PERF_RECORD_MISC_CPUMODE_UNKNOWN"); break;
 				case PERF_RECORD_MISC_KERNEL:
 					printf("PERF_RECORD_MISC_KERNEL"); break;
 				case PERF_RECORD_MISC_USER:
@@ -988,7 +988,7 @@ long long perf_mmap_read( void *our_mmap, int mmap_size,
 						printf("Uncached memory ");
 
 					if (src & (PERF_MEM_SNOOP_NA<<PERF_MEM_SNOOP_SHIFT))
-						printf("Not available ");
+						printf("Snoop Not available ");
 					if (src & (PERF_MEM_SNOOP_NONE<<PERF_MEM_SNOOP_SHIFT))
 						printf("No snoop ");
 					if (src & (PERF_MEM_SNOOP_HIT<<PERF_MEM_SNOOP_SHIFT))
@@ -999,12 +999,12 @@ long long perf_mmap_read( void *our_mmap, int mmap_size,
 						printf("Snoop hit modified ");
 
 					if (src & (PERF_MEM_LOCK_NA<<PERF_MEM_LOCK_SHIFT))
-						printf("Not available ");
+						printf("Locks Not available ");
 					if (src & (PERF_MEM_LOCK_LOCKED<<PERF_MEM_LOCK_SHIFT))
 						printf("Locked transaction ");
 
 					if (src & (PERF_MEM_TLB_NA<<PERF_MEM_TLB_SHIFT))
-						printf("Not available ");
+						printf("TLB Not available ");
 					if (src & (PERF_MEM_TLB_HIT<<PERF_MEM_TLB_SHIFT))
 						printf("Hit ");
 					if (src & (PERF_MEM_TLB_MISS<<PERF_MEM_TLB_SHIFT))

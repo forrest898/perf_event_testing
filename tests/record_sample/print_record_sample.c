@@ -37,7 +37,7 @@ int sample_type=PERF_SAMPLE_IP | PERF_SAMPLE_TID | PERF_SAMPLE_TIME |
 		PERF_SAMPLE_ADDR | PERF_SAMPLE_READ | PERF_SAMPLE_CALLCHAIN |
 		PERF_SAMPLE_ID | PERF_SAMPLE_CPU | PERF_SAMPLE_PERIOD |
 		PERF_SAMPLE_STREAM_ID | PERF_SAMPLE_RAW |
-		PERF_SAMPLE_BRANCH_STACK;
+		PERF_SAMPLE_BRANCH_STACK | PERF_SAMPLE_DATA_SRC;
 
 
 int read_format=
@@ -63,6 +63,8 @@ static void our_handler(int signum,siginfo_t *oh, void *blah) {
 
 	int ret;
 
+	//if(signum == SIGIO)
+		//printf("\nGreat Scott, I might be figuring this out.\n");
 	ret=ioctl(fd1, PERF_EVENT_IOC_DISABLE, quiet);
 
 	prev_head=perf_mmap_read(our_mmap,MMAP_DATA_SIZE,prev_head,
@@ -221,4 +223,3 @@ int main(int argc, char** argv) {
 
 	return 0;
 }
-

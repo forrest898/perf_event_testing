@@ -164,7 +164,7 @@ static void our_handler(int signum, siginfo_t *info, void *uc) {
 
 int main(int argc, char **argv) {
 
-	int ret;
+	int ret, i;
 	int fd;
 	int mmap_pages=1+MMAP_DATA_SIZE;
 
@@ -190,15 +190,18 @@ int main(int argc, char **argv) {
 
         memset(&pe,0,sizeof(struct perf_event_attr));
 
-	sample_type=PERF_SAMPLE_IP|PERF_SAMPLE_WEIGHT|PERF_SAMPLE_ADDR;
-	read_format=0;
+	sample_type=PERF_SAMPLE_IP|PERF_SAMPLE_WEIGHT|PERF_SAMPLE_ADDR|PERF_SAMPLE_DATA_SRC	 | PERF_SAMPLE_RAW| PERF_SAMPLE_READ;
+	read_format=PERF_FORMAT_GROUP |
+		PERF_FORMAT_ID |
+		PERF_FORMAT_TOTAL_TIME_ENABLED |
+		PERF_FORMAT_TOTAL_TIME_RUNNING;;
 
         pe.type=PERF_TYPE_RAW;
         pe.size=sizeof(struct perf_event_attr);
         //pe.config=PERF_COUNT_HW_INSTRUCTIONS;
 
 	 /* MEM_UOPS_RETIRED:ALL_STORES */
-	 pe.config = 0x5382d0;
+	 			pe.config = 0x5382d0; 
 
         pe.sample_period=SAMPLE_FREQUENCY;
         pe.sample_type=sample_type;
@@ -240,7 +243,7 @@ int main(int argc, char **argv) {
 			exit(1);
 		}
 	}
-
+	for(i = 0; i < 100; i++)
        naive_matrix_multiply(quiet);
 
 	ret=ioctl(fd, PERF_EVENT_IOC_REFRESH,0);

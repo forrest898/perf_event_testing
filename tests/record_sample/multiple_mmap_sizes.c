@@ -73,9 +73,11 @@ static void our_handler(int signum,siginfo_t *oh, void *blah) {
 	ret=ioctl(fd1, PERF_EVENT_IOC_DISABLE, 0);
 
 	if (num_oflos%100==0) {
+		printf("Overflow party!\n");
 		prev_head=perf_mmap_read(our_mmap,mmap_data_size,prev_head,
 					sample_type,read_format,0,
 					NULL,quiet,NULL,RAW_NONE);
+					printf("Overflow party2!\n");
 	}
 	num_oflos++;
 
@@ -90,7 +92,7 @@ static void our_handler(int signum,siginfo_t *oh, void *blah) {
 	}
 
 	count.total++;
-
+	//printf("%d %d\n", count.total, num_oflos);
 	ret=ioctl(fd1, PERF_EVENT_IOC_REFRESH, 1);
 
 	(void) ret;

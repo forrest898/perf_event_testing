@@ -33,8 +33,9 @@ long long naive_matrix_multiply_estimated_flops(int quiet) {
 void naive_matrix_multiply(int quiet) {
 
   double s;
-  int i,j,k;
+  long long i,j,k;
 
+  //printf("testing\n");
   for(i=0;i<MATRIX_SIZE;i++) {
     for(j=0;j<MATRIX_SIZE;j++) {
       a[i][j]=(double)i*(double)j;
@@ -63,4 +64,3 @@ void naive_matrix_multiply(int quiet) {
 
   return;
 }
-

@@ -117,9 +117,10 @@ int main(int argc, char** argv) {
 
 	memset(&pe,0,sizeof(struct perf_event_attr));
 
-	pe.type=PERF_TYPE_HARDWARE;
+	pe.type=PERF_TYPE_HW_CACHE;
 	pe.size=sizeof(struct perf_event_attr);
-	pe.config=PERF_COUNT_HW_INSTRUCTIONS;
+	pe.config= (PERF_COUNT_HW_CACHE_L1I) | (PERF_COUNT_HW_CACHE_OP_READ << 8) |
+    (PERF_COUNT_HW_CACHE_RESULT_MISS << 16);
 	pe.sample_period=SAMPLE_FREQUENCY;
 	pe.sample_type=sample_type;
 
