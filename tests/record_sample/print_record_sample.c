@@ -26,17 +26,17 @@
 #include "test_utils.h"
 #include "perf_helpers.h"
 #include "instructions_testcode.h"
+#include "matrix_multiply.h"
 
 #include "parse_record.h"
 
-#define SAMPLE_FREQUENCY 100000
+#define SAMPLE_FREQUENCY 1000
 
-#define MMAP_DATA_SIZE 8
+#define MMAP_DATA_SIZE 4
 
 int sample_type=PERF_SAMPLE_IP | PERF_SAMPLE_TID | PERF_SAMPLE_TIME |
 		PERF_SAMPLE_ADDR | PERF_SAMPLE_READ | PERF_SAMPLE_CALLCHAIN |
-		PERF_SAMPLE_ID | PERF_SAMPLE_CPU | PERF_SAMPLE_PERIOD |
-		PERF_SAMPLE_STREAM_ID | PERF_SAMPLE_RAW |
+		PERF_SAMPLE_ID | PERF_SAMPLE_CPU | PERF_SAMPLE_STREAM_ID | PERF_SAMPLE_RAW |
 		PERF_SAMPLE_BRANCH_STACK | PERF_SAMPLE_DATA_SRC;
 
 
@@ -91,7 +91,7 @@ static void our_handler(int signum,siginfo_t *oh, void *blah) {
 
 int main(int argc, char** argv) {
 
-	int ret;
+	int ret, i;
 	int mmap_pages=1+MMAP_DATA_SIZE;
 
 	struct perf_event_attr pe;
@@ -120,9 +120,9 @@ int main(int argc, char** argv) {
 
 	memset(&pe,0,sizeof(struct perf_event_attr));
 
- 	pe.type=PERF_TYPE_HARDWARE;
+ 	pe.type=PERF_TYPE_RAW;
 	pe.size=sizeof(struct perf_event_attr);
-	pe.config=PERF_COUNT_HW_INSTRUCTIONS;
+	pe.config=0x5108d1;
 	pe.sample_period=SAMPLE_FREQUENCY;
 	pe.sample_type=sample_type;
 
@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
 	pe.exclude_hv=1;
 	pe.wakeup_events=1;
 
-        pe.branch_sample_type=PERF_SAMPLE_BRANCH_ANY;
+    pe.branch_sample_type=PERF_SAMPLE_BRANCH_ANY;
 
 	arch_adjust_domain(&pe,quiet);
 
@@ -201,7 +201,10 @@ int main(int argc, char** argv) {
  		}
 	}
 
- 	instructions_million();
+	for(i = 0; i < 1; i++) {
+		naive_matrix_multiply(quiet);
+	}
+
 
 	ret=ioctl(fd1, PERF_EVENT_IOC_REFRESH,0);
 
@@ -228,5 +231,6 @@ int main(int argc, char** argv) {
 
 	test_pass(test_string);
 
+	printf("You'd think to see this last\n");
 	return 0;
 }
